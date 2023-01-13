@@ -1,0 +1,28 @@
+Invoices ordered by Number : 
+==================================================================
+
+ ###  Customer                  Issued      Amount      Paid      
+----  ------------------------  ----------  ----------  ----------
+ 101  John Hiatt                2021-07-10      1000.0 2021-10-01
+ 102  Janis Joplin              2021-07-12       170.0       null
+ 103  Buck Owens                2021-07-25       345.0 2021-09-01
+ 104  Chet Atkins               2021-08-23       500.0 2021-09-07
+ 110  John Hiatt                2021-08-26      1000.0 2021-10-01
+ 105  Buck Owens                2021-09-02       305.0 2021-11-30
+ 106  Janis Joplin              2021-09-12       170.0       null
+ 107  Glen Campbell             2021-09-15       800.0       null
+ 109  Jerry Reed                2021-09-24      1200.0 2021-10-03
+ 111  Chet Atkins               2021-10-01      1330.0 2021-10-20
+ 112  Lucinda Williams          2021-10-10      1000.0 2021-10-20
+ 113  Patty Larkin              2021-10-12      1000.0 2021-11-30
+ 108  Roy Clark                 2021-10-13      1345.0 2021-11-03
+ 114  Patsy Cline               2021-10-15      1200.0 2021-11-01
+ 115  June Carter               2021-11-10      1750.0 2021-11-10
+ 116  Patsy Cline               2021-11-12       660.0       null
+ 117  Janis Joplin              2021-11-12       170.0       null
+ 118  Patty Larkin              2021-11-12       170.0       null
+ 119  Roy Clark                 2021-11-15       200.0       null
+ 121  Glen Campbell             2021-11-15      1105.0       null
+ 123  Bonnie Raitt              2021-11-26      1500.0 2021-11-30
+ 122  Jerry Reed                2021-11-27      1440.0       null
+ 124  Johnny Cash               2021-11-30       750.0       null

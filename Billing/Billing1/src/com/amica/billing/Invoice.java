@@ -1,0 +1,29 @@
+package com.amica.billing;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import lombok.Data;
+
+@Data
+public class Invoice {
+
+	private int number;
+	private double amount;
+	private LocalDate invoiceDate;
+	private Optional<LocalDate> paidDate;
+	private Customer customer;
+
+//	public Invoice() {
+//		this(0, 0.0, "000000", "000000");
+//	}
+
+	public Invoice(int number, double amount, LocalDate invoiceDate, Optional<LocalDate> paidDate, Customer customer) {
+		this.number = number;
+		this.amount = amount;
+		this.invoiceDate = invoiceDate;
+		this.paidDate = paidDate;
+		this.customer = customer;
+	}
+
+}
