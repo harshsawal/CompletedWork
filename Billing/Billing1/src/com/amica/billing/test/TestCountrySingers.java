@@ -96,14 +96,14 @@ public class TestCountrySingers {
 		
 		reporter.reportInvoicesOrderedByNumber();
 		reporter.reportInvoicesByIssueDate();
-		//reporter.reportInvoicesGroupedByCustomer();
-		//reporter.reportOverdueInvoices();
-		//reporter.reportCustomersAndVolume();
+		reporter.reportInvoicesGroupedByCustomer();
+		reporter.reportOverdueInvoices();
+		reporter.reportCustomersAndVolume();
 
-		//billing.createCustomer("Merle", "Haggard", Terms.CASH);		
-		//billing.createInvoice("Merle Haggard", 100);
-		//billing.createInvoice("John Hiatt", 999);
-		//billing.payInvoice(107);
+		billing.createCustomer("Merle", "Haggard", Terms.CASH);		
+		billing.createInvoice("Merle Haggard", 100);
+		billing.createInvoice("John Hiatt", 999);
+		billing.payInvoice(107);
 		
 	}
 	

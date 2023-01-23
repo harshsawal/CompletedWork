@@ -116,7 +116,7 @@ public class CSVParser implements Parser {
 	 */
 	public String formatCustomer(Customer customer) {
 		//TODO provide the values to be formatted
-		return String.format("%s,%s,%s", "NYI", "NYI", "NYI");
+		return String.format("%s,%s,%s", customer.getFirstName(), customer.getLastName(), customer.getTerms());
 	}
 	
 	/**
@@ -125,7 +125,7 @@ public class CSVParser implements Parser {
 	public String formatInvoice(Invoice invoice) {
 		//TODO provide the values to be formatted
 		return String.format("%d,%s,%s,%.2f,%s%s", 
-				0, "NYI", "NYI", 0.0, "NYI", "NYI");
+				invoice.getNumber(), invoice.getCustomer().getFirstName(), invoice.getCustomer().getLastName(), invoice.getAmount(), invoice.getInvoiceDate(), invoice.getPaidDate());
 	}
 
 	@Override
@@ -158,12 +158,14 @@ public class CSVParser implements Parser {
 	@Override
 	public Stream<String> produceCustomers(Stream<Customer> customers) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		return customers.map(s->formatCustomer(s));
 	}
 
 	@Override
 	public Stream<String> produceInvoices(Stream<Invoice> invoices) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		return invoices.map(s->formatInvoice(s));
 	}
 }

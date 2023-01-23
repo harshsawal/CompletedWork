@@ -14,9 +14,13 @@ public class Invoice {
 	private Optional<LocalDate> paidDate;
 	private Customer customer;
 
-//	public Invoice() {
-//		this(0, 0.0, "000000", "000000");
-//	}
+	public Invoice() {
+		this(0, 0.0, LocalDate.MIN, null, null);
+	}
+	
+	public Invoice(String name, int number, Customer customer) {
+		this(number, 0.0, LocalDate.now(), null, customer);
+	}
 
 	public Invoice(int number, double amount, LocalDate invoiceDate, Optional<LocalDate> paidDate, Customer customer) {
 		this.number = number;
@@ -25,5 +29,6 @@ public class Invoice {
 		this.paidDate = paidDate;
 		this.customer = customer;
 	}
+	
 
 }
