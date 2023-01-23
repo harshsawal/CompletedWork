@@ -1,14 +1,24 @@
 package com.amica.help;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.amica.help.Ticket.Priority;
+import com.amica.help.Ticket.Status;
 
 /**
  * Unit test for the {@link HelpDesk} class.
@@ -83,5 +93,79 @@ public class HelpDeskTest {
 //	public static Matcher<Stream<? extends Ticket>> hasIDs(Integer... IDs) {
 //		return HasKeys.hasKeys(Ticket::getID, IDs);
 //	}
+	
+	public void createTicket1() {
+		helpDesk.createTicket(TICKET1_ORIGINATOR, TICKET1_DESCRIPTION, TICKET1_PRIORITY);
+	}
+	
+	public void createTicket2() {
+		helpDesk.createTicket(TICKET2_ORIGINATOR, TICKET2_DESCRIPTION, TICKET2_PRIORITY);
+	}
+	
+	@BeforeEach
+	public void createTechnician() {
+		helpDesk.addTechnician(TECH1, TECH1, 1);
+		helpDesk.addTechnician(TECH2, TECH2, 2);
+		helpDesk.addTechnician(TECH3, TECH3, 3);
+		Clock.setTime(100);
+		Iterator<Technician> iterator = helpDesk.getTechnicians().iterator();
+		tech1 = iterator.next();
+		tech2 = iterator.next();
+		tech3 = iterator.next();
+	}
+	
+	@Test
+	public void testTicketById() throws Exception{
+		createTicket1();
+		createTicket2();
+		assertEquals(TICKET2_DESCRIPTION, helpDesk.getTicketByID(TICKET2_ID).getDescription());
+	}
+	
+	@Test
+	public void testTicketByIdBeforeCreation() throws Exception{
+		assertNull(helpDesk.getTicketByID(TICKET2_ID));
+		createTicket1();
+		createTicket2();
+	}
+	
+	@Test
+	public void testCreateTicketsBeforeTechnician() {
+		HelpDesk help = new HelpDesk();
+		assertThrows(IllegalStateException.class, () -> help.createTicket(TICKET1_ORIGINATOR, TICKET1_DESCRIPTION, TICKET1_PRIORITY));
+	}
+	
+	@Test
+	public void testTicketToTechnician() {
+		createTicket1();
+		assertEquals(tech1, helpDesk.getTicketByID(TICKET1_ID).getTechnician());
+		assertEquals(1L, tech1.getActiveTickets().count());
+	}
+	
+	@Test
+	public void testDirtyTicketAssignment() {
+		createTicket1();
+		Ticket ticket1 = helpDesk.getTicketByID(TICKET1_ID);
+		tech2.assignTicket(ticket1); //this is bad
+		
+		createTicket2();
+		assertEquals(tech3, helpDesk.getTicketByID(TICKET2_ID).getTechnician());
+	}
+	
+	@Test
+	public void testTicketStatus() {
+		createTicket1();
+		createTicket2();
+		helpDesk.getTicketByID(TICKET2_ID).resolve("Resolved for testing!");
+		assertEquals(1L, helpDesk.getTicketsByStatus(Status.ASSIGNED).count());
+		assertEquals(1L, helpDesk.getTicketsByStatus(Status.RESOLVED).count());
+	}
+	
+	@Test
+	public void testTicketNotStatus() {
+		createTicket1();
+		createTicket2();
+		Stream<Ticket> result = helpDesk.getTicketsByNotStatus(Status.WAITING);//.sorted(Comparator.comparing(Ticket::getPriority).reversed());
+		assertThat(result, hasIDs(2,1));
+	}
 }
 
