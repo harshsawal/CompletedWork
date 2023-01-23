@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.amica.billing.Billing;
@@ -48,7 +49,7 @@ public class Reporter {
 			output.println();
 			output.println(" ###  Customer                  Issued      Amount      Paid      ");
 			output.println("----  ------------------------  ----------  ----------  ----------");
-			data.toList().forEach(s -> output.println(String.format("%4s  %-24s  %10s  %10s %10s", s.getNumber(),
+			map.entrySet().stream().collect(Collectors.toList()).forEach(s -> output.println(String.format("%4s  %-24s  %10s  %10s %10s",s.getKey().getName() ,s.getNumber(),
 					s.getCustomer().getName(), s.getInvoiceDate(), s.getAmount(), s.getPaidDate().orElse(null))));
 			output.close();
 		} catch (Exception ex) {
