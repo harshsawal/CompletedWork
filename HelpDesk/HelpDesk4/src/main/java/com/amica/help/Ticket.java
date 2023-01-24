@@ -81,7 +81,7 @@ public class Ticket implements Comparable<Ticket> {
 	    	if (getStatus() == Status.WAITING) { 
 	    		history.add(new Event(this, Status.ASSIGNED, reason));
 	    	} else {
-	    		throw new IllegalStateException("Can't seume a ticket that isn't in the WAITING state.");
+	    		throw new IllegalStateException("Can't resume a ticket that isn't in the WAITING state.");
 	    	}
     }
 	public void addNote(String note) {
