@@ -115,34 +115,34 @@ public class HelpDeskTest {
 	}
 	
 	@Test
-	public void testTicketById() throws Exception{
+	public void test1_GetTicketById() throws Exception{
 		createTicket1();
 		createTicket2();
 		assertEquals(TICKET2_DESCRIPTION, helpDesk.getTicketByID(TICKET2_ID).getDescription());
 	}
 	
 	@Test
-	public void testTicketByIdBeforeCreation() throws Exception{
+	public void test2_GetTicketByIdBeforeCreation() throws Exception{
 		assertNull(helpDesk.getTicketByID(TICKET2_ID));
 		createTicket1();
 		createTicket2();
 	}
 	
 	@Test
-	public void testCreateTicketsBeforeTechnician() {
+	public void test3_CreateTicketsBeforeTechnician() {
 		HelpDesk help = new HelpDesk();
 		assertThrows(IllegalStateException.class, () -> help.createTicket(TICKET1_ORIGINATOR, TICKET1_DESCRIPTION, TICKET1_PRIORITY));
 	}
 	
 	@Test
-	public void testTicketToTechnician() {
+	public void test4_AssignTicketToTechnician() {
 		createTicket1();
 		assertEquals(tech1, helpDesk.getTicketByID(TICKET1_ID).getTechnician());
 		assertEquals(1L, tech1.getActiveTickets().count());
 	}
 	
 	@Test
-	public void testDirtyTicketAssignment() {
+	public void test5_DirtyTicketAssignment() {
 		createTicket1();
 		Ticket ticket1 = helpDesk.getTicketByID(TICKET1_ID);
 		tech2.assignTicket(ticket1); //this is bad
@@ -152,7 +152,7 @@ public class HelpDeskTest {
 	}
 	
 	@Test
-	public void testTicketStatus() {
+	public void test6_GetTicketStatus() {
 		createTicket1();
 		createTicket2();
 		helpDesk.getTicketByID(TICKET2_ID).resolve("Resolved for testing!");
@@ -161,11 +161,54 @@ public class HelpDeskTest {
 	}
 	
 	@Test
-	public void testTicketNotStatus() {
+	public void test7_GetTicketByNotStatus() {
 		createTicket1();
 		createTicket2();
 		Stream<Ticket> result = helpDesk.getTicketsByNotStatus(Status.WAITING);//.sorted(Comparator.comparing(Ticket::getPriority).reversed());
 		assertThat(result, hasIDs(2,1));
+	}
+	
+	@Test
+	public void test8_GetTicketByTags() {
+		createTicket1();
+		createTicket2();
+		//Tags tags = new Tags();
+		helpDesk.addTags(2, TAG1, TAG2);
+		helpDesk.addTags(1, TAG1, TAG3);
+		assertEquals(1L, helpDesk.getTicketsWithAnyTag(TAG2).count());
+		assertEquals(2L, helpDesk.getTicketsWithAnyTag(TAG1).count());
+	}
+	
+	@Test
+	public void test9_GetTicketsByText() {
+		createTicket1();
+		createTicket2();
+		Ticket ticket1 = helpDesk.getTicketByID(TICKET1_ID);
+		Ticket ticket2 = helpDesk.getTicketByID(TICKET2_ID);
+		ticket1.addNote("Testing some ticket for text extraction!");
+		ticket2.addNote("Testing some tickets for text extraction!");
+		assertEquals(2L, helpDesk.getTicketsByText("ticket").count());
+		assertEquals(1L, helpDesk.getTicketsByText("tickets").count());
+	}
+	
+	@Test
+	public void test10_GetTicketsByTechnician() {
+		createTicket1();
+		createTicket2();
+		Ticket ticket1 = helpDesk.getTicketByID(TICKET1_ID);
+		Ticket ticket2 = helpDesk.getTicketByID(TICKET2_ID);
+		tech1.assignTicket(ticket1);
+		tech2.assignTicket(ticket2);
+		
+		assertEquals(1L, helpDesk.getTicketsByTechnician(TECH1).count());
+		assertEquals(0, helpDesk.getTicketsByTechnician(TECH3).count());
+	}
+	
+	@Test
+	public void test11_GetLatestActivity() {
+		createTicket1();
+		Ticket ticket1 = helpDesk.getTicketByID(TICKET1_ID);
+		
 	}
 }
 
