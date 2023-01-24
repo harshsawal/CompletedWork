@@ -1,9 +1,19 @@
 package com.amica.help;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.comparesEqualTo;
+
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.amica.help.Ticket.Priority;
 import com.amica.help.Ticket.Status;
@@ -60,6 +70,15 @@ public class TicketTest {
         eventWith(status, note));
   }
   
+  protected Matcher<Ticket> ticketWith(int ID, String Originator, String description, Priority priority) {
+	    return allOf(instanceOf(Ticket.class),
+	        hasProperty("ID", equalTo(ID)),
+	        hasProperty("originator", equalTo(Originator)),
+	        hasProperty("description", equalTo(description)),
+	        hasProperty("priority", equalTo(priority)),
+	        hasProperty("technician", equalTo(null)));
+	  }
+  
   /**
    * Call init() to set the clock and create technicians
    * Create the test target.
@@ -68,6 +87,23 @@ public class TicketTest {
   public void setUp() {
     Clock.setTime(START_TIME);
     ticket = new Ticket(ID, ORIGINATOR, DESCRIPTION, PRIORITY);
+  }
+  
+  @Test
+  public void test1_TicketInitialized() {
+	  assertThat(ticket, ticketWith(ID, ORIGINATOR, DESCRIPTION, PRIORITY));
+	  assertHasEvent(0, Status.CREATED, "Created ticket.");
+  }
+  
+  @Test
+  public void test2_TicketPriorityCompare() {
+	  Ticket ticket1_lowPriority = new Ticket(2, ORIGINATOR, DESCRIPTION, Priority.LOW);
+	  Ticket ticket2_UrgentPriority = new Ticket(3, ORIGINATOR, DESCRIPTION, Priority.URGENT);
+	  Ticket ticket3_SamePriority = new Ticket(4, ORIGINATOR, DESCRIPTION, Priority.HIGH);
+	  
+	  assertThat(ticket, both(lessThan(ticket1_lowPriority)).and(greaterThan(ticket2_UrgentPriority)) );
+	  assertThat(ticket, lessThanOrEqualTo(ticket3_SamePriority));
+	  //assertThat(ticket, comparesEqualTo(ticket3_SamePriority)); //this is to check if they follow ascending order by ID
   }
   
 }

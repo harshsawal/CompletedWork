@@ -186,7 +186,7 @@ public class HelpDeskTest {
 		Ticket ticket1 = helpDesk.getTicketByID(TICKET1_ID);
 		Ticket ticket2 = helpDesk.getTicketByID(TICKET2_ID);
 		ticket1.addNote("Testing some ticket for text extraction!");
-		ticket2.addNote("Testing some tickets for text extraction!");
+		ticket2.addNote("Festing Fome tickets for Fext fextraction!");
 		assertEquals(2L, helpDesk.getTicketsByText("ticket").count());
 		assertEquals(1L, helpDesk.getTicketsByText("tickets").count());
 	}
