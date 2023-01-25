@@ -1,7 +1,7 @@
-Invoices ordered by Number : 
+Invoices ordered by IssueDate : 
 ==================================================================
 
- ###  Customer                  Issued      Amount      Paid      
+ ###  Customer                      Issued      Amount       Paid
 ----  ------------------------  ----------  ----------  ----------
  101  John Hiatt                2021-07-10      1000.0 2021-10-01
  102  Janis Joplin              2021-07-12       170.0       null

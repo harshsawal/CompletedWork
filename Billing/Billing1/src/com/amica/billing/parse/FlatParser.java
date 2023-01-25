@@ -118,8 +118,14 @@ public class FlatParser implements Parser {
 				Customer customer = customers.get(firstName+" "+lastName);
 				
 				//TODO create an invoice and return it
-				Invoice invoice = new Invoice(number, amount, theDate, paidDate, customer);
-				return invoice;
+				
+				if(customer != null) {
+					Invoice invoice = new Invoice(number, amount, theDate, paidDate, customer);
+					return invoice;
+				}
+				else {
+					log.warning(() -> "Customer not found, try again! -  " + line);
+				}
 				
 			} catch (Exception ex) {
 				log.warning(() -> 
@@ -157,7 +163,12 @@ public class FlatParser implements Parser {
 
 		//TODO provide the values to be formatted
 		return String.format(formatString, 
-				invoice.getNumber(), invoice.getCustomer().getFirstName(), invoice.getCustomer().getLastName(), invoice.getAmount(), invoice.getInvoiceDate(), invoice.getPaidDate());
+				invoice.getNumber(), 
+				invoice.getCustomer().getFirstName(), 
+				invoice.getCustomer().getLastName(), 
+				invoice.getAmount(), 
+				invoice.getInvoiceDate(), 
+				invoice.getPaidDate());
 	}
 
 	@Override

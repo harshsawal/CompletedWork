@@ -17,4 +17,13 @@ public enum Terms {
 	public int getDays() {
 		return days;
 	}
+	
+	public static Terms fromDays(int days) {
+		for(Terms term : values()) {
+			if(term.getDays() == days) {
+				return term;
+			}
+		}
+		return null;
+	}
 }

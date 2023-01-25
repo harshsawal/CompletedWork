@@ -116,7 +116,7 @@ public class CSVParser implements Parser {
 	 */
 	public String formatCustomer(Customer customer) {
 		//TODO provide the values to be formatted
-		return String.format("%s,%s,%s", customer.getFirstName(), customer.getLastName(), customer.getTerms());
+		return String.format("%s,%s,%s", customer.getFirstName(), customer.getLastName(), customer.getTerms().toString().replace("CREDIT_", ""));
 	}
 	
 	/**
@@ -125,7 +125,12 @@ public class CSVParser implements Parser {
 	public String formatInvoice(Invoice invoice) {
 		//TODO provide the values to be formatted
 		return String.format("%d,%s,%s,%.2f,%s%s", 
-				invoice.getNumber(), invoice.getCustomer().getFirstName(), invoice.getCustomer().getLastName(), invoice.getAmount(), invoice.getInvoiceDate(), invoice.getPaidDate());
+				invoice.getNumber(), 
+				invoice.getCustomer().getFirstName(), 
+				invoice.getCustomer().getLastName(), 
+				invoice.getAmount(), 
+				invoice.getInvoiceDate(), 
+				invoice.getPaidDate());
 	}
 
 	@Override

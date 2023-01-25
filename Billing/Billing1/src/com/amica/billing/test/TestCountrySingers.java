@@ -100,7 +100,7 @@ public class TestCountrySingers {
 		reporter.reportOverdueInvoices();
 		reporter.reportCustomersAndVolume();
 
-		billing.createCustomer("Merle", "Haggard", Terms.CASH);		
+		billing.createCustomer("Merle", "Haggard", Terms.CASH);
 		billing.createInvoice("Merle Haggard", 100);
 		billing.createInvoice("John Hiatt", 999);
 		billing.payInvoice(107);
@@ -108,15 +108,14 @@ public class TestCountrySingers {
 	}
 	
 	public static void main(String[] args) {
-		
 		File workspace = new File("data/country_singers");
 		workspace.mkdir();
 		try {
 			// This sets up data files just for this test, fresh copy each time,
 			// and assures that the folders are in place to hold reports:
-			Files.copy(Paths.get("C:\\Users\\A036779\\JavaTraining\\Billing1\\data\\customers.csv"), Paths.get(CUSTOMERS_FILENAME),
+			Files.copy(Paths.get("C:\\Users\\A036779\\JavaTraining\\Completed Work\\Billing\\Billing1\\data\\customers.csv"), Paths.get(CUSTOMERS_FILENAME),
 					StandardCopyOption.REPLACE_EXISTING);
-			Files.copy(Paths.get("C:\\Users\\A036779\\JavaTraining\\Billing1\\data\\invoices.csv"), Paths.get(INVOICES_FILENAME),
+			Files.copy(Paths.get("C:\\Users\\A036779\\JavaTraining\\Completed Work\\Billing\\Billing1\\data\\invoices.csv"), Paths.get(INVOICES_FILENAME),
 					StandardCopyOption.REPLACE_EXISTING);
 			Files.createDirectories(Paths.get(OUTPUT_FOLDER));
 			

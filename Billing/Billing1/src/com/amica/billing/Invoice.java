@@ -4,8 +4,12 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@EqualsAndHashCode(of="number")
 public class Invoice {
 
 	private int number;
@@ -14,12 +18,9 @@ public class Invoice {
 	private Optional<LocalDate> paidDate;
 	private Customer customer;
 
-	public Invoice() {
-		this(0, 0.0, LocalDate.MIN, null, null);
-	}
 	
-	public Invoice(String name, int number, Customer customer) {
-		this(number, 0.0, LocalDate.now(), null, customer);
+	public Invoice(int number, Customer customer, double amount, LocalDate invoiceDate) {
+		this(number, amount, invoiceDate, null, customer);
 	}
 
 	public Invoice(int number, double amount, LocalDate invoiceDate, Optional<LocalDate> paidDate, Customer customer) {
@@ -29,6 +30,19 @@ public class Invoice {
 		this.paidDate = paidDate;
 		this.customer = customer;
 	}
-	
+
+	public boolean isOverDue(LocalDate asOf) {
+		return paidDate.orElse(asOf).isAfter(getDueDate());
+	}
+
+	public LocalDate getDueDate() {
+		int allowedDays = customer.getTerms().getDays();
+		return invoiceDate.plusDays(allowedDays);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Invoice %s", number);
+	}
 
 }
