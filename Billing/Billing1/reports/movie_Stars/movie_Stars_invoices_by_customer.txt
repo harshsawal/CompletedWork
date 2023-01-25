@@ -1,0 +1,54 @@
+All invoices, grouped by customer : 
+==================================================================
+
+       Customer                      Issued      Amount       Paid
+----  ------------------------  ----------  ----------  ----------
+
+Edward Brophy
+ 523  Edward Brophy             2021-10-01       266.0 2021-10-20
+ 914  Edward Brophy             2021-08-23       100.0 2021-09-07
+
+Nat Pendleton
+ 294  Nat Pendleton             2021-10-10       200.0 2021-10-20
+
+Cesar Romero
+ 795  Cesar Romero              2021-09-15       160.0       null
+ 671  Cesar Romero              2021-11-15       221.0       null
+
+Henry Wadsworth
+ 225  Henry Wadsworth           2021-10-12       200.0 2021-11-30
+ 957  Henry Wadsworth           2021-11-12        34.0       null
+
+William Powell
+ 764  William Powell            2021-11-30       150.0       null
+
+Minna Gombell
+ 179  Minna Gombell             2021-11-26       300.0 2021-11-30
+
+Skippy Asta
+ 550  Skippy Asta               2021-09-12        34.0       null
+ 746  Skippy Asta               2021-07-12        34.0       null
+ 813  Skippy Asta               2021-11-12        34.0       null
+
+Natalie Moorhead
+ 558  Natalie Moorhead          2021-07-25        69.0 2021-09-01
+ 251  Natalie Moorhead          2021-09-02        61.0 2021-11-30
+
+Myrna Loy
+ 661  Myrna Loy                 2021-10-12       269.0 2021-11-03
+ 958  Myrna Loy                 2021-11-15        40.0       null
+
+Bert Roach
+ 683  Bert Roach                2021-09-24       240.0 2021-10-03
+ 853  Bert Roach                2021-11-26       288.0       null
+
+Edward Ellis
+ 150  Edward Ellis              2021-11-10       350.0 2021-11-10
+
+Maureen O'Sullivan
+ 223  Maureen O'Sullivan        2021-10-15       240.0 2021-11-01
+ 142  Maureen O'Sullivan        2021-11-12       132.0       null
+
+Porter Hall
+ 133  Porter Hall               2021-08-26       200.0 2021-10-01
+ 419  Porter Hall               2021-07-10       200.0 2021-10-01
