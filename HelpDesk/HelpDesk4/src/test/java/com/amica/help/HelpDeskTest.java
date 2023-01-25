@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.BeforeEach;
@@ -107,11 +109,12 @@ public class HelpDeskTest {
 		helpDesk.addTechnician(TECH1, TECH1, 1);
 		helpDesk.addTechnician(TECH2, TECH2, 2);
 		helpDesk.addTechnician(TECH3, TECH3, 3);
-		Clock.setTime(100);
+		
 		Iterator<Technician> iterator = helpDesk.getTechnicians().iterator();
 		tech1 = iterator.next();
 		tech2 = iterator.next();
 		tech3 = iterator.next();
+		Clock.setTime(100);
 	}
 	
 	@Test
@@ -119,6 +122,7 @@ public class HelpDeskTest {
 		createTicket1();
 		createTicket2();
 		assertEquals(TICKET2_DESCRIPTION, helpDesk.getTicketByID(TICKET2_ID).getDescription());
+		//assertThat(helpDesk.getTicketByID(TICKET2_ID).getDescription(), equalTo(TICKET2_DESCRIPTION));
 	}
 	
 	@Test
@@ -139,6 +143,9 @@ public class HelpDeskTest {
 		createTicket1();
 		assertEquals(tech1, helpDesk.getTicketByID(TICKET1_ID).getTechnician());
 		assertEquals(1L, tech1.getActiveTickets().count());
+		
+		assertThat(helpDesk.getTicketByID(TICKET1_ID).getTechnician(), equalTo(TECH1));
+		assertThat(tech1.getActiveTickets().count(), equalTo(1L));
 	}
 	
 	@Test
