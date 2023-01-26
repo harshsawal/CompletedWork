@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,7 @@ import static org.hamcrest.Matchers.comparesEqualTo;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import com.amica.help.Ticket.Priority;
 import com.amica.help.Ticket.Status;
@@ -108,6 +110,11 @@ public class TicketTest {
 		ticket.resume(RESUME_REASON);
 	}
 
+	protected void resolve() {
+		passOneMinute();
+		ticket.resolve(RESOLVE_REASON);
+	}
+
 	protected void addNote() {
 		passOneMinute();
 		ticket.addNote(NOTE);
@@ -171,8 +178,267 @@ public class TicketTest {
 
 		assertThat(ticket.getStatus(), equalTo(Status.ASSIGNED));
 		assertThat(ticket.getTechnician(), equalTo(tech1));
-		assertHasEvent(1, Status.ASSIGNED, String.format("Assigned to Technician %s, %s.", TECHNICIAN1_ID, TECHNICIAN1_NAME));
+		assertHasEvent(1, Status.ASSIGNED,
+				String.format("Assigned to Technician %s, %s.", TECHNICIAN1_ID, TECHNICIAN1_NAME));
 		verify(tech1).assignTicket(ticket);
+	}
+
+	@Test
+	public void testSuspendAndReassign() {
+		assign();
+		suspend();
+		reassign();
+
+		assertThat(ticket.getStatus(), equalTo(Status.WAITING));
+		assertThat(ticket.getTechnician(), equalTo(tech2));
+
+		assertHasEvent(3, null, String.format("Assigned to Technician %s, %s.", TECHNICIAN2_ID, TECHNICIAN2_NAME));
+		verify(tech1).assignTicket(ticket);
+		verify(tech2).assignTicket(ticket);
+	}
+
+	@Test
+	public void testWait() {
+		assign();
+		suspend();
+
+		assertThat(ticket.getStatus(), equalTo(Status.WAITING));
+
+		assertHasEvent(2, Status.WAITING, WAIT_REASON);
+	}
+
+	@Test
+	public void testResume() {
+		assign();
+		suspend();
+		resume();
+
+		assertThat(ticket.getStatus(), equalTo(Status.ASSIGNED));
+
+		assertHasEvent(3, Status.ASSIGNED, RESUME_REASON);
+	}
+
+	@Test
+	public void testResolve() {
+		assign();
+		resolve();
+
+		assertThat(ticket.getStatus(), equalTo(Status.RESOLVED));
+
+		assertHasEvent(2, Status.RESOLVED, RESOLVE_REASON);
+		verify(tech1).resolveTicket(ticket);
+	}
+
+	@Test
+	public void testAddNote() {
+		assign();
+		addNote();
+
+		assertThat(ticket.getStatus(), equalTo(Status.ASSIGNED));
+
+		assertHasEvent(2, null, NOTE);
+	}
+
+	///////////////////////////////////////////////////////////////////
+	// Illegal arguments
+	//
+
+	@Test
+	public void testInitialization_NullOriginator() {
+		assertThrows(IllegalArgumentException.class, () -> new Ticket(ID, null, DESCRIPTION, PRIORITY));
+	}
+
+	@Test
+	public void testInitialization_NullDescription() {
+		assertThrows(IllegalArgumentException.class, () -> new Ticket(ID, ORIGINATOR, null, PRIORITY));
+	}
+
+	@Test
+	public void testInitialization_NullPriority() {
+		assertThrows(IllegalArgumentException.class, () -> new Ticket(ID, ORIGINATOR, DESCRIPTION, null));
+	}
+
+	@Test
+	public void testAssign_NullTechnician() {
+		assertThrows(IllegalArgumentException.class, () -> ticket.assign(null));
+	}
+
+	@Test
+	public void testWait_NullReason() {
+		assign();
+		assertThrows(IllegalArgumentException.class, () -> ticket.suspend(null));
+	}
+
+	@Test
+	public void testResume_NullReason() {
+		assign();
+		assertThrows(IllegalArgumentException.class, () -> ticket.resume(null));
+	}
+
+	@Test
+	public void testResolve_NullReason() {
+		assign();
+		assertThrows(IllegalArgumentException.class, () -> ticket.resolve(null));
+	}
+
+	@Test
+	public void testAddNote_NullReason() {
+		assign();
+		assertThrows(IllegalArgumentException.class, () -> ticket.addNote(null));
+	}
+
+	@Test
+	public void testAddTags_NullArray() {
+		assign();
+		assertThrows(IllegalArgumentException.class, () -> ticket.addTag(null));
+	}
+
+	///////////////////////////////////////////////////////////////////
+	// Illegal state transitions
+	//
+
+	@Test
+	private void assertThrowsOnStateChange(Executable call) {
+		assertThrows(IllegalStateException.class, call);
+	}
+
+	@Test
+	public void testAssign_Resolved() {
+		assign();
+		resolve();
+		assertThrowsOnStateChange(this::assign);
+	}
+
+	@Test
+	public void testWait_Created() {
+		assertThrowsOnStateChange(this::suspend);
+	}
+
+	@Test
+	public void testWait_Resolved() {
+		assign();
+		resolve();
+		assertThrowsOnStateChange(this::suspend);
+	}
+
+	@Test
+	public void testResume_Created() {
+		assertThrowsOnStateChange(this::resume);
+	}
+
+	@Test
+	public void testResume_Assigned() {
+		assign();
+		assertThrowsOnStateChange(this::resume);
+	}
+
+	@Test
+	public void testResume_Resolved() {
+		assign();
+		resolve();
+		assertThrowsOnStateChange(this::resume);
+	}
+
+	@Test
+	public void testResolve_Created() {
+		assertThrowsOnStateChange(this::resolve);
+	}
+
+	@Test
+	public void testResolve_Waiting() {
+		assign();
+		suspend();
+		assertThrowsOnStateChange(this::resolve);
+	}
+
+	@Test
+	public void testResolve_Resolved() {
+		assign();
+		resolve();
+		assertThrowsOnStateChange(this::resolve);
+	}
+
+	///////////////////////////////////////////////////////////////////
+	// Tags
+	//
+
+	@Test
+	public void testGetTags0() {
+		assertThat(ticket.getTags().count(), equalTo(0L));
+	}
+
+	@Test
+	public void testGetTags1() {
+		ticket.addTag(TAG1);
+		assertThat(ticket.getTags().count(), equalTo(1L));
+		assertThat(ticket.getTags().toList().contains(TAG1), equalTo(true));
+	}
+
+	@Test
+	public void testGetTags2() {
+		ticket.addTag(TAG1);
+		ticket.addTag(TAG2);
+		assertThat(ticket.getTags().count(), equalTo(2L));
+		assertThat(ticket.getTags().toList().contains(TAG2), equalTo(true));
+	}
+
+	@Test
+	public void testGetTags_Duplicates() {
+		ticket.addTag(TAG1);
+		ticket.addTag(TAG1);
+		assertThat(ticket.getTags().count(), equalTo(1L));
+	}
+
+	///////////////////////////////////////////////////////////////////
+	// Time to resolve
+	//
+
+	@Test
+	public void testGetMinutesToResolve() {
+		assign();
+		resolve();
+		assertThat(ticket.getMinutesToResolve(), equalTo(2));
+	}
+
+	@Test
+	public void testGetMinutesToResolve_Unresolved() {
+		assertThrows(IllegalStateException.class, ticket::getMinutesToResolve);
+	}
+
+	///////////////////////////////////////////////////////////////////
+	// Text search
+	//
+
+	@Test
+	public void testIncluesText_Description() {
+		assertThat(ticket.includesText(DESCRIPTION), equalTo(true));
+	}
+
+	@Test
+	public void testIncluesText_DescriptionSubstring() {
+		assertThat(ticket.includesText(DESCRIPTION.substring(0, 3)), equalTo(true));
+	}
+
+	@Test
+	public void testIncluesText_Note() {
+		addNote();
+		assertThat(ticket.includesText(NOTE), equalTo(true));
+	}
+
+	@Test
+	public void testIncluesText_NoteSubstring() {
+		addNote();
+		assertThat(ticket.includesText(NOTE.substring(1, 3)), equalTo(true));
+	}
+
+	@Test
+	public void testIncluesText_NotIncluded() {
+		assertThat(ticket.includesText("Not in the ticket"), equalTo(false));
+	}
+
+	@Test
+	public void testIncluesText_DescriptionPlusNote() {
+		assertThat(ticket.includesText(DESCRIPTION + NOTE), equalTo(false));
 	}
 
 }
