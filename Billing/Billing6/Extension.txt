@@ -1,0 +1,20 @@
+Billing4 Extension
+
+Working with a partner, develop replication from one DB to another, e.g. Derby to Mongo. This is generally known as an ETL (extract, transform, load) process, although you'll really just be extracting from one and loading to the other.
+
+Since you can't support both DBs in one application, this will require some scripting and two separate Maven projects. Major steps are laid out here:
+
+1. Create a Git repository and each push your full project to it, in subfolders such as "DerbY' and "MongoDB".
+
+2. On one side, develop an Export component, much like the Migration component but running in the other direction, so it reads customers and invoices from the database and writes to CSV files -- well, or flat files, if you like. Develop an applciation to use this component, such as ExportDerbyToCSV. You might want a different server.env and configuration for this, so it doesn't stomp on existing CSV files.
+
+You might want to make some modifications to the data -- create customers and invoices, pay invoices -- before exporting, so that it's noticeably different from any of our stock data so far.
+
+3. Write a script (.bat, .sh, whatever) that exports from one database and "migrates" to the other. This is probably three steps: run the export utility in one project, copy the file to a location in the other project, and run the migrate tuility in that other project (probably with different configuration).
+
+    a. To run an application fromt he command line, do this:
+    
+        mvn -DmainClass=<class-name> compile exec:java
+
+    b. You've been hard-coding server.env in your main() method, but you don't have to do so, and as we get to scripting something like an ETL it's nice to be able to set it on the command line. Remember this is just -Dserver.env=<value> added to the above command.
+
