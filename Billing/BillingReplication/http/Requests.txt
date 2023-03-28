@@ -1,0 +1,60 @@
+============================================================
+Test script for the Billing service.
+-- ECHO ON
+-- PAD ON
+------------------------------------------------
+GET /customers/Jerry%20Reed HTTP/1.1
+Accept: application/json
+------------------------------------------------
+GET /customers?byVolume HTTP/1.1
+Accept: application/json
+------------------------------------------------
+PUT /customers/Merle%20Haggard HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{ "name": "Merle Haggard", "terms": "CASH" }
+------------------------------------------------
+GET /customers/Merle%20Haggard HTTP/1.1
+Accept: application/json
+------------------------------------------------
+GET /invoices/101 HTTP/1.1
+Accept: application/json
+------------------------------------------------
+GET /invoices?customerName=John%20Hiatt HTTP/1.1
+Accept: application/json
+------------------------------------------------
+GET /invoices?byCustomer HTTP/1.1
+Accept: application/json
+------------------------------------------------
+GET /invoices?overdueAsOf=2022-01-08 HTTP/1.1
+Accept: application/json
+------------------------------------------------
+POST /invoices HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{ "customerName": "June Carter", "amount": 100.0 }
+------------------------------------------------
+GET /invoices/125 HTTP/1.1
+Accept: application/json
+------------------------------------------------
+PATCH /invoices/107?pay HTTP/1.1
+------------------------------------------------
+GET /invoices/107 HTTP/1.1
+Accept: application/json
+------------------------------------------------
+GET /history HTTP/1.1
+Accept: application/json
+------------------------------------------------
+GET /reports/invoices HTTP/1.1
+Accept: text/plain
+------------------------------------------------
+GET /reports/overdue_invoices HTTP/1.1
+Accept: text/plain
+------------------------------------------------
+GET /reports/invoices_by_customer HTTP/1.1
+Accept: text/plain
+------------------------------------------------
+GET /reports/customers_and_volume HTTP/1.1
+Accept: text/plain

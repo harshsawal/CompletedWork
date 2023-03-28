@@ -1,0 +1,39 @@
+============================================================
+Test script for the Billing service, triggering errors.
+-- ECHO ON
+-- PAD ON
+------------------------------------------------
+GET /customers/None%20Such HTTP/1.1
+Accept: application/json
+------------------------------------------------
+PUT /customers HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{ "name": "Jerry Reed", "terms": "CASH" }
+------------------------------------------------
+GET /invoices/1 HTTP/1.1
+Accept: application/json
+------------------------------------------------
+GET /invoices?customerName=None%20Such HTTP/1.1
+Accept: application/json
+------------------------------------------------
+POST /invoices HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{ "customerName": "None Such", "amount": 100.0 }
+------------------------------------------------
+PATCH /invoices/101?pay HTTP/1.1
+------------------------------------------------
+PUT /customers HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{ "name": "Billy Ray Cyrus", "terms": "CASH" }
+------------------------------------------------
+POST /invoices HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{ "customerName": "Patty Larkin", "amount": 0 }

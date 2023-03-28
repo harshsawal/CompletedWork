@@ -1,0 +1,249 @@
+============================================================
+Test script for the Billing service.
+------------------------------------------------
+-- GET /customers/Jerry%20Reed HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+{"name":"Jerry Reed","terms":"CREDIT_30"}
+
+------------------------------------------------
+-- GET /customers?byVolume HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+[{"customer":{"name":"Jerry Reed","terms":"CREDIT_30"},"volume":2640.0},{"customer":{"name":"John Hiatt","terms":"CREDIT_90"},"volume":2000.0},{"customer":{"name":"Glen Campbell","terms":"CREDIT_60"},"volume":1905.0},{"customer":{"name":"Patsy Cline","terms":"CREDIT_30"},"volume":1860.0},{"customer":{"name":"Chet Atkins","terms":"CREDIT_30"},"volume":1830.0},{"customer":{"name":"June Carter","terms":"CASH"},"volume":1750.0},{"customer":{"name":"Roy Clark","terms":"CREDIT_60"},"volume":1545.0},{"customer":{"name":"Bonnie Raitt","terms":"CREDIT_30"},"volume":1500.0},{"customer":{"name":"Patty Larkin","terms":"CREDIT_30"},"volume":1170.0},{"customer":{"name":"Lucinda Williams","terms":"CREDIT_30"},"volume":1000.0},{"customer":{"name":"Johnny Cash","terms":"CASH"},"volume":750.0},{"customer":{"name":"Buck Owens","terms":"CREDIT_60"},"volume":650.0},{"customer":{"name":"Janis Joplin","terms":"CREDIT_90"},"volume":510.0}]
+
+------------------------------------------------
+-- PUT /customers HTTP/1.1
+
+HTTP/1.1 204 
+
+
+
+------------------------------------------------
+-- GET /customers/Merle%20Haggard HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+{"name":"Merle Haggard","terms":"CASH"}
+
+------------------------------------------------
+-- GET /invoices/101 HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+{"number":101,"customer":{"name":"John Hiatt","terms":"CREDIT_90"},"amount":1000.0,"issueDate":"2021-07-10","paidDate":"2021-10-01"}
+
+------------------------------------------------
+-- GET /invoices?customerName=John%20Hiatt HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+[{"number":101,"amount":1000.0,"issueDate":"2021-07-10","paideDate":"2021-10-01"},{"number":110,"amount":1000.0,"issueDate":"2021-08-26","paideDate":"2021-10-01"}]
+
+------------------------------------------------
+-- GET /invoices?byCustomer HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+{"Bonnie Raitt":[{"number":123,"amount":1500.0,"issueDate":"2021-11-26","paideDate":"2021-11-30"}],"Buck Owens":[{"number":103,"amount":345.0,"issueDate":"2021-07-25","paideDate":"2021-09-01"},{"number":105,"amount":305.0,"issueDate":"2021-09-02","paideDate":"2021-11-30"}],"Chet Atkins":[{"number":104,"amount":500.0,"issueDate":"2021-08-23","paideDate":"2021-09-07"},{"number":111,"amount":1330.0,"issueDate":"2021-10-01","paideDate":"2021-10-20"}],"Glen Campbell":[{"number":107,"amount":800.0,"issueDate":"2021-09-15","paideDate":null},{"number":121,"amount":1105.0,"issueDate":"2021-11-15","paideDate":null}],"Janis Joplin":[{"number":102,"amount":170.0,"issueDate":"2021-07-12","paideDate":null},{"number":106,"amount":170.0,"issueDate":"2021-09-12","paideDate":null},{"number":117,"amount":170.0,"issueDate":"2021-11-12","paideDate":null}],"Jerry Reed":[{"number":109,"amount":1200.0,"issueDate":"2021-09-24","paideDate":"2021-10-03"},{"number":122,"amount":1440.0,"issueDate":"2021-11-27","paideDate":null}],"John Hiatt":[{"number":101,"amount":1000.0,"issueDate":"2021-07-10","paideDate":"2021-10-01"},{"number":110,"amount":1000.0,"issueDate":"2021-08-26","paideDate":"2021-10-01"}],"Johnny Cash":[{"number":124,"amount":750.0,"issueDate":"2021-11-30","paideDate":null}],"June Carter":[{"number":115,"amount":1750.0,"issueDate":"2021-11-10","paideDate":"2021-11-10"}],"Lucinda Williams":[{"number":112,"amount":1000.0,"issueDate":"2021-10-10","paideDate":"2021-10-20"}],"Patsy Cline":[{"number":114,"amount":1200.0,"issueDate":"2021-10-15","paideDate":"2021-11-01"},{"number":116,"amount":660.0,"issueDate":"2021-11-12","paideDate":null}],"Patty Larkin":[{"number":113,"amount":1000.0,"issueDate":"2021-10-12","paideDate":"2021-11-30"},{"number":118,"amount":170.0,"issueDate":"2021-11-12","paideDate":null}],"Roy Clark":[{"number":108,"amount":1345.0,"issueDate":"2021-10-13","paideDate":"2021-11-03"},{"number":119,"amount":200.0,"issueDate":"2021-11-15","paideDate":null}]}
+
+------------------------------------------------
+-- GET /invoices?overdueAsOf=2022-01-08 HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+[{"number":102,"customer":{"name":"Janis Joplin","terms":"CREDIT_90"},"amount":170.0,"issueDate":"2021-07-12","paidDate":null},{"number":105,"customer":{"name":"Buck Owens","terms":"CREDIT_60"},"amount":305.0,"issueDate":"2021-09-02","paidDate":"2021-11-30"},{"number":106,"customer":{"name":"Janis Joplin","terms":"CREDIT_90"},"amount":170.0,"issueDate":"2021-09-12","paidDate":null},{"number":107,"customer":{"name":"Glen Campbell","terms":"CREDIT_60"},"amount":800.0,"issueDate":"2021-09-15","paidDate":null},{"number":113,"customer":{"name":"Patty Larkin","terms":"CREDIT_30"},"amount":1000.0,"issueDate":"2021-10-12","paidDate":"2021-11-30"},{"number":116,"customer":{"name":"Patsy Cline","terms":"CREDIT_30"},"amount":660.0,"issueDate":"2021-11-12","paidDate":null},{"number":118,"customer":{"name":"Patty Larkin","terms":"CREDIT_30"},"amount":170.0,"issueDate":"2021-11-12","paidDate":null},{"number":122,"customer":{"name":"Jerry Reed","terms":"CREDIT_30"},"amount":1440.0,"issueDate":"2021-11-27","paidDate":null},{"number":124,"customer":{"name":"Johnny Cash","terms":"CASH"},"amount":750.0,"issueDate":"2021-11-30","paidDate":null}]
+
+------------------------------------------------
+-- POST /invoices HTTP/1.1
+
+HTTP/1.1 201 
+Content-Type: application/json
+
+{"number":125,"customer":{"name":"June Carter","terms":"CASH"},"amount":100.0,"issueDate":"@TST-DATE@","paidDate":null}
+
+------------------------------------------------
+-- GET /invoices/125 HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+{"number":125,"customer":{"name":"June Carter","terms":"CASH"},"amount":100.0,"issueDate":"@TST-DATE@","paidDate":null}
+
+------------------------------------------------
+-- PATCH /invoices/107?pay HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+{"number":107,"customer":{"name":"Glen Campbell","terms":"CREDIT_60"},"amount":800.0,"issueDate":"2021-09-15","paidDate":"@TST-DATE@"}
+
+------------------------------------------------
+-- GET /invoices/107 HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+{"number":107,"customer":{"name":"Glen Campbell","terms":"CREDIT_60"},"amount":800.0,"issueDate":"2021-09-15","paidDate":"@TST-DATE@"}
+
+------------------------------------------------
+-- GET /history HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: application/json
+
+[{"_id":"61f5cd89f85c112191c7080b","when":"2022-01-29T18:28:09.7852646","customer":{"name":"Merle Haggard","terms":"CASH"},"invoice":null},{"_id":"61f5cd89f85c112191c7080c","when":"2022-01-29T18:28:09.8590926","customer":null,"invoice":{"number":125,"customer":{"name":"June Carter","terms":"CASH"},"amount":100.0,"issueDate":"@TST-DATE@","paidDate":null}},{"_id":"61f5cd89f85c112191c7080d","when":"2022-01-29T18:28:09.8829994","customer":null,"invoice":{"number":107,"customer":{"name":"Glen Campbell","terms":"CREDIT_60"},"amount":800.0,"issueDate":"2021-09-15","paidDate":"@TST-DATE@"}}]
+
+------------------------------------------------
+-- GET /reports/invoices HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: text/plain;charset=UTF-8
+
+All invoices, ordered by invoice number
+==================================================================
+
+       Customer                     Issued      Amount        Paid
+----  ------------------------  ----------  ----------  ----------
+ 101  John Hiatt                07/10/2021    1,000.00  10/01/2021
+ 102  Janis Joplin              07/12/2021      170.00            
+ 103  Buck Owens                07/25/2021      345.00  09/01/2021
+ 104  Chet Atkins               08/23/2021      500.00  09/07/2021
+ 105  Buck Owens                09/02/2021      305.00  11/30/2021
+ 106  Janis Joplin              09/12/2021      170.00            
+ 107  Glen Campbell             09/15/2021      800.00  @TST/DATE@
+ 108  Roy Clark                 10/13/2021    1,345.00  11/03/2021
+ 109  Jerry Reed                09/24/2021    1,200.00  10/03/2021
+ 110  John Hiatt                08/26/2021    1,000.00  10/01/2021
+ 111  Chet Atkins               10/01/2021    1,330.00  10/20/2021
+ 112  Lucinda Williams          10/10/2021    1,000.00  10/20/2021
+ 113  Patty Larkin              10/12/2021    1,000.00  11/30/2021
+ 114  Patsy Cline               10/15/2021    1,200.00  11/01/2021
+ 115  June Carter               11/10/2021    1,750.00  11/10/2021
+ 116  Patsy Cline               11/12/2021      660.00            
+ 117  Janis Joplin              11/12/2021      170.00            
+ 118  Patty Larkin              11/12/2021      170.00            
+ 119  Roy Clark                 11/15/2021      200.00            
+ 121  Glen Campbell             11/15/2021    1,105.00            
+ 122  Jerry Reed                11/27/2021    1,440.00            
+ 123  Bonnie Raitt              11/26/2021    1,500.00  11/30/2021
+ 124  Johnny Cash               11/30/2021      750.00            
+ 125  June Carter               @TST/DATE@      100.00            
+
+------------------------------------------------
+-- GET /reports/overdue_invoices HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: text/plain;charset=UTF-8
+
+Overdue invoices, ordered by issue date
+==============================================================================
+
+       Customer                     Issued      Amount        Paid         Due
+----  ------------------------  ----------  ----------  ----------  ----------
+ 102  Janis Joplin              07/12/2021      170.00              10/10/2021
+ 105  Buck Owens                09/02/2021      305.00  11/30/2021  11/01/2021
+ 106  Janis Joplin              09/12/2021      170.00              12/11/2021
+ 107  Glen Campbell             09/15/2021      800.00  @TST/DATE@  11/14/2021
+ 113  Patty Larkin              10/12/2021    1,000.00  11/30/2021  11/11/2021
+ 116  Patsy Cline               11/12/2021      660.00              12/12/2021
+ 118  Patty Larkin              11/12/2021      170.00              12/12/2021
+ 122  Jerry Reed                11/27/2021    1,440.00              12/27/2021
+ 124  Johnny Cash               11/30/2021      750.00              11/30/2021
+
+------------------------------------------------
+-- GET /reports/invoices_by_customer HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: text/plain;charset=UTF-8
+
+All invoices, grouped by customer and ordered by invoice number
+==================================================================
+
+       Customer                     Issued      Amount        Paid
+----  ------------------------  ----------  ----------  ----------
+
+Patty Larkin
+ 113  Patty Larkin              10/12/2021    1,000.00  11/30/2021
+ 118  Patty Larkin              11/12/2021      170.00            
+
+Jerry Reed
+ 109  Jerry Reed                09/24/2021    1,200.00  10/03/2021
+ 122  Jerry Reed                11/27/2021    1,440.00            
+
+Janis Joplin
+ 102  Janis Joplin              07/12/2021      170.00            
+ 106  Janis Joplin              09/12/2021      170.00            
+ 117  Janis Joplin              11/12/2021      170.00            
+
+Lucinda Williams
+ 112  Lucinda Williams          10/10/2021    1,000.00  10/20/2021
+
+Buck Owens
+ 103  Buck Owens                07/25/2021      345.00  09/01/2021
+ 105  Buck Owens                09/02/2021      305.00  11/30/2021
+
+Glen Campbell
+ 107  Glen Campbell             09/15/2021      800.00  @TST/DATE@
+ 121  Glen Campbell             11/15/2021    1,105.00            
+
+Johnny Cash
+ 124  Johnny Cash               11/30/2021      750.00            
+
+June Carter
+ 115  June Carter               11/10/2021    1,750.00  11/10/2021
+ 125  June Carter               @TST/DATE@      100.00            
+
+Roy Clark
+ 108  Roy Clark                 10/13/2021    1,345.00  11/03/2021
+ 119  Roy Clark                 11/15/2021      200.00            
+
+Bonnie Raitt
+ 123  Bonnie Raitt              11/26/2021    1,500.00  11/30/2021
+
+John Hiatt
+ 101  John Hiatt                07/10/2021    1,000.00  10/01/2021
+ 110  John Hiatt                08/26/2021    1,000.00  10/01/2021
+
+Chet Atkins
+ 104  Chet Atkins               08/23/2021      500.00  09/07/2021
+ 111  Chet Atkins               10/01/2021    1,330.00  10/20/2021
+
+Patsy Cline
+ 114  Patsy Cline               10/15/2021    1,200.00  11/01/2021
+ 116  Patsy Cline               11/12/2021      660.00            
+
+------------------------------------------------
+-- GET /reports/customers_and_volume HTTP/1.1
+
+HTTP/1.1 200 
+Content-Type: text/plain;charset=UTF-8
+
+All customers and total volume of business
+==================================================================
+
+Customer                        Volume
+------------------------  ------------
+Jerry Reed                    2,640.00
+John Hiatt                    2,000.00
+Glen Campbell                 1,905.00
+Patsy Cline                   1,860.00
+June Carter                   1,850.00
+Chet Atkins                   1,830.00
+Roy Clark                     1,545.00
+Bonnie Raitt                  1,500.00
+Patty Larkin                  1,170.00
+Lucinda Williams              1,000.00
+Johnny Cash                     750.00
+Buck Owens                      650.00
+Janis Joplin                    510.00
+Merle Haggard                     0.00

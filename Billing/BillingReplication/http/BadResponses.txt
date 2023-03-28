@@ -1,0 +1,65 @@
+============================================================
+Test script for the Billing service, triggering errors.
+------------------------------------------------
+-- GET /customers/None%20Such HTTP/1.1
+
+HTTP/1.1 404 
+Content-Type: application/json
+
+{"timestamp":"2022-01-29T23:51:10Z","status":"404","error":"Not Found","path":"/customers/None Such","errors":[{"message":"No customer with name: None Such","code":null,"type":null,"errors":[]}]}
+
+------------------------------------------------
+-- PUT /customers HTTP/1.1
+
+HTTP/1.1 409 
+Content-Type: application/json
+
+{"timestamp":"2022-01-29T23:51:10Z","status":"409","error":"Conflict","path":"/customers","errors":[{"message":"There is already a customer with name: Jerry Reed","code":null,"type":null,"errors":[]}]}
+
+------------------------------------------------
+-- GET /invoices/1 HTTP/1.1
+
+HTTP/1.1 404 
+Content-Type: application/json
+
+{"timestamp":"2022-01-29T23:51:10Z","status":"404","error":"Not Found","path":"/invoices/1","errors":[{"message":"No invoice with number: 1","code":null,"type":null,"errors":[]}]}
+
+------------------------------------------------
+-- GET /invoices?customerName=None%20Such HTTP/1.1
+
+HTTP/1.1 404 
+Content-Type: application/json
+
+{"timestamp":"2022-01-29T23:51:10Z","status":"404","error":"Not Found","path":"/invoices","errors":[{"message":"No customer with name: None Such","code":null,"type":null,"errors":[]}]}
+
+------------------------------------------------
+-- POST /invoices HTTP/1.1
+
+HTTP/1.1 404 
+Content-Type: application/json
+
+{"timestamp":"2022-01-29T23:51:10Z","status":"404","error":"Not Found","path":"/invoices","errors":[{"message":"No customer with name: None Such","code":null,"type":null,"errors":[]}]}
+
+------------------------------------------------
+-- PATCH /invoices/101?pay HTTP/1.1
+
+HTTP/1.1 409 
+Content-Type: application/json
+
+{"timestamp":"2022-01-29T23:51:10Z","status":"409","error":"Conflict","path":"/invoices/101","errors":[{"message":"Invoice number 101 is already paid.","code":null,"type":null,"errors":[]}]}
+
+------------------------------------------------
+-- PUT /customers HTTP/1.1
+
+HTTP/1.1 400 
+Content-Type: application/json
+
+{"timestamp":"2022-02-07T02:08:01Z","status":"400","error":"Bad Request","path":"/customers","errors":[{"message":"Field error in object 'customer' on field 'name': rejected value [Billy Ray Cyrus]","code":null,"type":null,"errors":[]}]}
+
+------------------------------------------------
+-- POST /invoices HTTP/1.1
+
+HTTP/1.1 400 
+Content-Type: application/json
+
+{"timestamp":"2022-02-07T02:09:53Z","status":"400","error":"Bad Request","path":"/invoices","errors":[{"message":"Field error in object 'newInvoice' on field 'amount': rejected value [0.0]","code":null,"type":null,"errors":[]}]}
